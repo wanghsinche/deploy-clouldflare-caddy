@@ -154,7 +154,8 @@ async function setupCloudflare(): Promise<void> {
       const { certificate, clientKey } = await generateSelfSignedCertificate(domain);
       
       // 上传证书到 Cloudflare
-      await uploadCertificate(domain, zone.id, 3650);
+      // 没必要，因为cloudflare full 模式不会验证证书有效性，所以不需要上传证书
+      // await uploadCertificate(domain, zone.id, 3650);
       
       
       // 保存证书到本地
