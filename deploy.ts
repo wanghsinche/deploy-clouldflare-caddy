@@ -22,10 +22,13 @@ function generateCaddyfile(services: Services): string {
   let caddyfileContent = '';
   
   for (const [domain, port] of Object.entries(services)) {
+    const certPath = path.resolve(__dirname, 'certs', `${domain}.crt`);
+    const keyPath = path.resolve(__dirname, 'certs', `${domain}.key`);
+
     caddyfileContent += `
 ${domain} {
   reverse_proxy localhost:${port}
-  tls internal
+  tls ${certPath} ${keyPath}
 }
 `;
   }
@@ -72,10 +75,11 @@ async function uploadCertificate(domain: string, zoneId: string, validityDays: n
     const { csr, clientKey } = await generateCSR(domain);
     
     // 创建证书
-    await cf.clientCertificates.create({
-      zone_id: zoneId,
+    await cf.originCACertificates.create({
       csr: csr,
-      validity_days: validityDays
+      hostnames: [domain],
+      request_type: 'origin-rsa',
+      requested_validity: 5475
     });
     
     // 保存私钥到本地
