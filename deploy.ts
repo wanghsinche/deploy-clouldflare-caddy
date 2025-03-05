@@ -169,11 +169,61 @@ function setupCaddy(): void {
   console.log('Caddyfile generated');
 }
 
-// 主函数
+// 生成 Nginx 配置文件内容
+function generateNginxConfig(services: Services): string {
+  let nginxConfig = '';
+  
+  // 添加 HTTP 服务器配置（重定向到 HTTPS）
+  for (const domain of Object.keys(services)) {
+    nginxConfig += `
+server {
+    listen 80;
+    server_name ${domain};
+    return 301 https://$server_name$request_uri;
+}`;
+  }
+  
+  // 添加 HTTPS 服务器配置
+  for (const [domain, port] of Object.entries(services)) {
+    nginxConfig += `
+server {
+    listen 443 ssl;
+    server_name ${domain};
+
+    ssl_certificate /Users/bytedance/work/domain-deploy/certs/${domain}.crt;
+    ssl_certificate_key /Users/bytedance/work/domain-deploy/certs/${domain}.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;
+    ssl_prefer_server_ciphers off;
+
+    location / {
+        proxy_pass http://localhost:${port};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}`;
+  }
+  
+  return nginxConfig;
+}
+
+// 设置 Nginx 配置
+function setupNginx(): void {
+  const nginxConfig = generateNginxConfig(config.services);
+  const nginxConfigPath = path.join(__dirname, 'nginx.conf');
+  fs.writeFileSync(nginxConfigPath, nginxConfig);
+  console.log('Nginx configuration generated');
+}
+
+// 修改主函数，添加 Nginx 配置生成
 async function main(): Promise<void> {
   try {
     await setupCloudflare();
     setupCaddy();
+    setupNginx();  // 添加这一行
     console.log('Setup completed successfully');
   } catch (error) {
     console.error('Setup failed:', error);
