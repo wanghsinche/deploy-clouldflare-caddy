@@ -175,6 +175,9 @@ function generateNginxConfig(services: Services): string {
   
   // 添加 HTTP 服务器配置（重定向到 HTTPS）
   for (const domain of Object.keys(services)) {
+    const certPath = path.resolve(__dirname, 'certs', `${domain}.crt`);
+    const keyPath = path.resolve(__dirname, 'certs', `${domain}.key`);
+
     nginxConfig += `
 server {
     listen 80;
@@ -185,13 +188,16 @@ server {
   
   // 添加 HTTPS 服务器配置
   for (const [domain, port] of Object.entries(services)) {
+    const certPath = path.resolve(__dirname, 'certs', `${domain}.crt`);
+    const keyPath = path.resolve(__dirname, 'certs', `${domain}.key`);
+
     nginxConfig += `
 server {
     listen 443 ssl;
     server_name ${domain};
 
-    ssl_certificate /Users/bytedance/work/domain-deploy/certs/${domain}.crt;
-    ssl_certificate_key /Users/bytedance/work/domain-deploy/certs/${domain}.key;
+    ssl_certificate ${certPath};
+    ssl_certificate_key ${keyPath};
 
     ssl_protocols TLSv1.2 TLSv1.3;
     ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384;

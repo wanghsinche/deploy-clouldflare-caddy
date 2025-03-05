@@ -31,3 +31,4 @@ yarn-error.log*
 config.json
 *.crt
 *.key
+.conf
