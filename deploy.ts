@@ -27,8 +27,8 @@ function generateCaddyfile(services: Services): string {
 
     caddyfileContent += `
 ${domain} {
-  reverse_proxy localhost:${port}
   tls ${certPath} ${keyPath}
+  reverse_proxy localhost:${port}
 }
 `;
   }
@@ -160,6 +160,13 @@ async function setupCloudflare(): Promise<void> {
       // 保存证书到本地
       fs.writeFileSync(path.join(__dirname, 'certs', `${domain}.crt`), certificate);
       fs.writeFileSync(path.join(__dirname, 'certs', `${domain}.key`), clientKey);
+    
+      // 打开ssl full 模式
+      await cf.zones.settings.edit('ssl', {
+        value: 'full',
+        zone_id: zone.id,
+      });
+    
     } catch (error) {
       console.error(`Error setting up ${domain}:`, error);
     }
@@ -233,8 +240,8 @@ async function main(): Promise<void> {
   try {
     await setupCloudflare();
     setupCaddy();
-    setupNginx();  // 添加这一行
-    console.log('Setup completed successfully');
+    // setupNginx();  // 添加这一行
+    console.log('Setup completed successfully', 'run `caddy run` to start the server');
   } catch (error) {
     console.error('Setup failed:', error);
   }
