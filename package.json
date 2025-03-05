@@ -11,6 +11,7 @@
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "dependencies": {
+        "@types/pem": "^1.14.4",
         "cloudflare": "^4.1.0",
         "pem": "^1.14.8",
         "tsx": "^4.19.3",
