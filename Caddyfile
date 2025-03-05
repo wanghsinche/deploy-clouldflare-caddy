@@ -1,0 +1,5 @@
+
+api.lady-lines.com {
+  reverse_proxy localhost:8080
+  tls internal
+}

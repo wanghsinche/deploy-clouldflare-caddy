@@ -1,0 +1,12 @@
+{
+  "cloudflare": {
+    "api_token": "your-cloudflare-api-token",
+    "account_id": "your-cloudflare-account-id",
+    "email": "your-cloudflare-email"
+  },
+  "server_ip": "your-server-ip",
+  "services": {
+    "api.example.com": "8080",
+    "api.yourdomain.com": "9000"
+  }
+}
