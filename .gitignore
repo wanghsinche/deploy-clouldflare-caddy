@@ -32,3 +32,4 @@ config.json
 *.crt
 *.key
 .conf
+v2ray/

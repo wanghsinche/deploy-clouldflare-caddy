@@ -177,8 +177,8 @@ async function setupCloudflare(): Promise<void> {
 // 生成并保存 Caddyfile
 function setupCaddy(): void {
   const caddyfileContent = generateCaddyfile(config.services);
-  fs.writeFileSync('Caddyfile', caddyfileContent);
-  console.log('Caddyfile generated');
+  fs.writeFileSync('Caddyfile.new', caddyfileContent);
+  console.log('Caddyfile generated, you must save the old one');
 }
 
 // 生成 Nginx 配置文件内容

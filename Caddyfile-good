@@ -1,3 +1,4 @@
+
 api.lady-lines.com {
   tls /root/deploy-clouldflare-caddy/certs/api.lady-lines.com.crt /root/deploy-clouldflare-caddy/certs/api.lady-lines.com.key
     root * /usr/share/caddy
@@ -8,6 +9,7 @@ api.lady-lines.com {
     }
 
   file_server
+
 
 }
 
@@ -23,18 +25,10 @@ api.findata-be.uk {
     to localhost:2053
   }
 
+
+
+
+
   log ./caddy.log
 
-}
-
-prefect.findata-be.uk {
-  tls /root/deploy-clouldflare-caddy/certs/prefect.findata-be.uk.crt /root/deploy-clouldflare-caddy/certs/prefect.findata-be.uk.key
-
-  # Static files for /link_artifact/
-  handle_path /link_artifact/* {
-      root * /root/finance-tools-model/data
-      file_server
-  }
-
-  reverse_proxy localhost:4200
 }
