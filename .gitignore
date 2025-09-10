@@ -29,6 +29,7 @@ yarn-error.log*
 
 # Config files with secrets
 config.json
+config-flamel.json
 *.crt
 *.key
 .conf

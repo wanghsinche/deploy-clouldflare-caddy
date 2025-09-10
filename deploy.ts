@@ -4,7 +4,7 @@ import pem from 'pem';
 import Cloudflare from 'cloudflare';
 
 // 读取配置文件
-const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
+const config = JSON.parse(fs.readFileSync('config-flamel.json', 'utf8'));
 
 // 初始化 Cloudflare API
 const cf = new Cloudflare({
@@ -17,13 +17,19 @@ interface Services {
   [domain: string]: number;
 }
 
+const caddyPath = '/etc/caddy';
+
 // 生成 Caddyfile 内容
 function generateCaddyfile(services: Services): string {
   let caddyfileContent = '';
   
   for (const [domain, port] of Object.entries(services)) {
-    const certPath = path.resolve(__dirname, 'certs', `${domain}.crt`);
-    const keyPath = path.resolve(__dirname, 'certs', `${domain}.key`);
+    // const certPath = path.resolve(__dirname, 'certs', `${domain}.crt`);
+    // const keyPath = path.resolve(__dirname, 'certs', `${domain}.key`);
+    const certPath = path.resolve(caddyPath, 'certs', `${domain}.crt`);
+    const keyPath = path.resolve(caddyPath, 'certs', `${domain}.key`);
+
+    
 
     caddyfileContent += `
 ${domain} {
@@ -83,7 +89,7 @@ async function uploadCertificate(domain: string, zoneId: string, validityDays: n
     });
     
     // 保存私钥到本地
-    const certDir = path.join(__dirname, 'certs');
+    const certDir = path.join(caddyPath, 'certs');
     if (!fs.existsSync(certDir)) {
       fs.mkdirSync(certDir);
     }
@@ -159,8 +165,8 @@ async function setupCloudflare(): Promise<void> {
       
       
       // 保存证书到本地
-      fs.writeFileSync(path.join(__dirname, 'certs', `${domain}.crt`), certificate);
-      fs.writeFileSync(path.join(__dirname, 'certs', `${domain}.key`), clientKey);
+      fs.writeFileSync(path.join(caddyPath, 'certs', `${domain}.crt`), certificate);
+      fs.writeFileSync(path.join(caddyPath, 'certs', `${domain}.key`), clientKey);
     
       // 打开ssl full 模式
       await cf.zones.settings.edit('ssl', {
@@ -168,6 +174,8 @@ async function setupCloudflare(): Promise<void> {
         zone_id: zone.id,
       });
     
+      console.log('Updated ssl full')
+
     } catch (error) {
       console.error(`Error setting up ${domain}:`, error);
     }
@@ -187,8 +195,8 @@ function generateNginxConfig(services: Services): string {
   
   // 添加 HTTP 服务器配置（重定向到 HTTPS）
   for (const domain of Object.keys(services)) {
-    const certPath = path.resolve(__dirname, 'certs', `${domain}.crt`);
-    const keyPath = path.resolve(__dirname, 'certs', `${domain}.key`);
+    const certPath = path.resolve(caddyPath, 'certs', `${domain}.crt`);
+    const keyPath = path.resolve(caddyPath, 'certs', `${domain}.key`);
 
     nginxConfig += `
 server {
@@ -200,8 +208,8 @@ server {
   
   // 添加 HTTPS 服务器配置
   for (const [domain, port] of Object.entries(services)) {
-    const certPath = path.resolve(__dirname, 'certs', `${domain}.crt`);
-    const keyPath = path.resolve(__dirname, 'certs', `${domain}.key`);
+    const certPath = path.resolve(caddyPath, 'certs', `${domain}.crt`);
+    const keyPath = path.resolve(caddyPath, 'certs', `${domain}.key`);
 
     nginxConfig += `
 server {
@@ -226,14 +234,6 @@ server {
   }
   
   return nginxConfig;
-}
-
-// 设置 Nginx 配置
-function setupNginx(): void {
-  const nginxConfig = generateNginxConfig(config.services);
-  const nginxConfigPath = path.join(__dirname, 'nginx.conf');
-  fs.writeFileSync(nginxConfigPath, nginxConfig);
-  console.log('Nginx configuration generated');
 }
 
 // 修改主函数，添加 Nginx 配置生成

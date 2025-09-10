@@ -1,12 +1,5 @@
-{
-    servers {
-        trusted_proxies static private_ranges 103.21.244.0/22 103.22.200.0/22 103.31.4.0/22 104.16.0.0/13 104.24.0.0/14 108.162.192.0/18 131.0.72.0/22 141.101.64.0/18 162.158.0.0/15 172.64.0.0/13 173.245.48.0/20 188.114.96.0/20 190.93.240.0/20 197.234.240.0/22 198.41.128.0/17 2400:cb00::/32 2606:4700::/32 2803:f800::/32 2405:b500::/32 2405:8100::/32 2a06:98c0::/29 2c0f:f248::/32
-        trusted_proxies_strict
-    }
-}
-
 api.lady-lines.com {
-  tls /etc/caddy/certs/api.lady-lines.com.crt /etc/caddy/certs/api.lady-lines.com.key
+  tls /root/deploy-clouldflare-caddy/certs/api.lady-lines.com.crt /root/deploy-clouldflare-caddy/certs/api.lady-lines.com.key
     root * /usr/share/caddy
 
       # 反向代理 V2Ray WebSocket 流量
@@ -19,15 +12,11 @@ api.lady-lines.com {
 }
 
 api.findata-be.uk {
-  tls /etc/caddy/certs/api.findata-be.uk.crt /etc/caddy/certs/api.findata-be.uk.key
+  tls /root/deploy-clouldflare-caddy/certs/api.findata-be.uk.crt /root/deploy-clouldflare-caddy/certs/api.findata-be.uk.key
  
   # Handle specific path first
   handle /vless {
     reverse_proxy localhost:56631
-  }
-
-  handle /vmess {
-    reverse_proxy localhost:41921
   }
 
   # Handle all other paths (default proxy)
@@ -49,7 +38,7 @@ api.findata-be.uk {
 }
 
 prefect.findata-be.uk {
-  tls /etc/caddy/certs/prefect.findata-be.uk.crt /etc/caddy/certs/prefect.findata-be.uk.key
+  tls /root/deploy-clouldflare-caddy/certs/prefect.findata-be.uk.crt /root/deploy-clouldflare-caddy/certs/prefect.findata-be.uk.key
 
   # Static files for /link_artifact/
   handle_path /link_artifact/* {
@@ -62,19 +51,14 @@ prefect.findata-be.uk {
 
 
 stripe.findata-be.uk {
-  tls /etc/caddy/certs/stripe.findata-be.uk.crt /etc/caddy/certs/stripe.findata-be.uk.key
+  tls /root/deploy-clouldflare-caddy/certs/stripe.findata-be.uk.crt /root/deploy-clouldflare-caddy/certs/stripe.findata-be.uk.key
   reverse_proxy localhost:8000
-}
-
-mcp.plusefin.com {
-  tls /etc/caddy/certs/mcp.plusefin.com.crt /etc/caddy/certs/mcp.plusefin.com.key
-  reverse_proxy localhost:8001
 }
 
 
 chat.findata-be.uk {
     # Provide your own TLS certificate and key
-    tls /etc/caddy/certs/chat.findata-be.uk.crt /etc/caddy/certs/chat.findata-be.uk.key
+    tls /root/deploy-clouldflare-caddy/certs/chat.findata-be.uk.crt /root/deploy-clouldflare-caddy/certs/chat.findata-be.uk.key
 
     # Handle API requests by proxying them to your backend
     # The trailing '*' is crucial to match paths like /api/users
@@ -84,7 +68,6 @@ chat.findata-be.uk {
     handle /api/* {
         reverse_proxy localhost:3001 {
             header_up X-Real-IP {http.request.remote.host}
-
         }
     }
 
@@ -99,4 +82,3 @@ chat.findata-be.uk {
         file_server
     }
 }
-

@@ -1,0 +1,5 @@
+
+mcp.plusefin.com {
+  tls /etc/caddy/certs/mcp.plusefin.com.crt /etc/caddy/certs/mcp.plusefin.com.key
+  reverse_proxy localhost:8001
+}
