@@ -5,19 +5,6 @@
     }
 }
 
-api.lady-lines.com {
-  tls /etc/caddy/certs/api.lady-lines.com.crt /etc/caddy/certs/api.lady-lines.com.key
-    root * /usr/share/caddy
-
-      # 反向代理 V2Ray WebSocket 流量
-    reverse_proxy /cc {
-        to localhost:10086
-    }
-
-  file_server
-
-}
-
 api.findata-be.uk {
   tls /etc/caddy/certs/api.findata-be.uk.crt /etc/caddy/certs/api.findata-be.uk.key
  
@@ -68,9 +55,31 @@ stripe.findata-be.uk {
 
 mcp.plusefin.com {
   tls /etc/caddy/certs/mcp.plusefin.com.crt /etc/caddy/certs/mcp.plusefin.com.key
-  reverse_proxy localhost:8001
+
+  # Swagger / OpenAPI docs
+  handle /docs* {
+    reverse_proxy localhost:8002
+  }
+  handle /openapi.json {
+    reverse_proxy localhost:8002
+  }
+
+  # HTTP API (new) - strip /api prefix
+  handle /api/* {
+    uri strip_prefix /api
+    reverse_proxy localhost:8002
+  }
+
+  # MCP Server (existing)
+  handle {
+    reverse_proxy localhost:8001
+  }
 }
 
+opencode.findata-be.uk {
+  tls /etc/caddy/certs/opencode.findata-be.uk.crt /etc/caddy/certs/opencode.findata-be.uk.key
+  reverse_proxy localhost:3141
+}
 
 chat.findata-be.uk {
     # Provide your own TLS certificate and key
@@ -98,5 +107,10 @@ chat.findata-be.uk {
         
         file_server
     }
+}
+
+jlc.findata-be.uk {
+  tls /etc/caddy/certs/jlc.findata-be.uk.crt /etc/caddy/certs/jlc.findata-be.uk.key
+  reverse_proxy localhost:8003
 }
 

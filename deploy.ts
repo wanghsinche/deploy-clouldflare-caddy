@@ -4,7 +4,7 @@ import pem from 'pem';
 import Cloudflare from 'cloudflare';
 
 // 读取配置文件
-const config = JSON.parse(fs.readFileSync('config-flamel.json', 'utf8'));
+const config = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 
 // 初始化 Cloudflare API
 const cf = new Cloudflare({

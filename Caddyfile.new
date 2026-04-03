@@ -1,5 +1,30 @@
 
-mcp.plusefin.com {
-  tls /etc/caddy/certs/mcp.plusefin.com.crt /etc/caddy/certs/mcp.plusefin.com.key
-  reverse_proxy localhost:8001
+adguard.findata-be.uk {
+  tls /etc/caddy/certs/adguard.findata-be.uk.crt /etc/caddy/certs/adguard.findata-be.uk.key
+  reverse_proxy localhost:3000
+}
+
+prefect.findata-be.uk {
+  tls /etc/caddy/certs/prefect.findata-be.uk.crt /etc/caddy/certs/prefect.findata-be.uk.key
+  reverse_proxy localhost:4200
+}
+
+stripe.findata-be.uk {
+  tls /etc/caddy/certs/stripe.findata-be.uk.crt /etc/caddy/certs/stripe.findata-be.uk.key
+  reverse_proxy localhost:3001
+}
+
+chat.findata-be.uk {
+  tls /etc/caddy/certs/chat.findata-be.uk.crt /etc/caddy/certs/chat.findata-be.uk.key
+  reverse_proxy localhost:3001
+}
+
+opencode.findata-be.uk {
+  tls /etc/caddy/certs/opencode.findata-be.uk.crt /etc/caddy/certs/opencode.findata-be.uk.key
+  reverse_proxy localhost:3141
+}
+
+jlc.findata-be.uk {
+  tls /etc/caddy/certs/jlc.findata-be.uk.crt /etc/caddy/certs/jlc.findata-be.uk.key
+  reverse_proxy localhost:8003
 }
