@@ -28,3 +28,13 @@ jlc.findata-be.uk {
   tls /etc/caddy/certs/jlc.findata-be.uk.crt /etc/caddy/certs/jlc.findata-be.uk.key
   reverse_proxy localhost:8003
 }
+
+easyeda-ai-bridge.findata-be.uk {
+  tls /etc/caddy/certs/easyeda-ai-bridge.findata-be.uk.crt /etc/caddy/certs/easyeda-ai-bridge.findata-be.uk.key
+  reverse_proxy localhost:49620
+}
+
+invest-dashboard.findata-be.uk {
+  tls /etc/caddy/certs/invest-dashboard.findata-be.uk.crt /etc/caddy/certs/invest-dashboard.findata-be.uk.key
+  reverse_proxy localhost:8501
+}
