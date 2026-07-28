@@ -8,7 +8,10 @@
         "start": "tsx ./deploy.ts",
         "build": "tsc",
         "dev": "tsx watch ./deploy.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "frontend:build": "cd /root/finance-tools-master && npm run build",
+        "frontend:deploy": "cp /root/finance-tools-master/dist/index.html /var/lib/caddy/www/chat/ && cp /root/finance-tools-master/dist/vite.svg /var/lib/caddy/www/chat/ && cp /root/finance-tools-master/dist/assets/* /var/lib/caddy/www/chat/assets/ && cp Caddyfile /etc/caddy/Caddyfile && caddy reload --config /etc/caddy/Caddyfile",
+        "deploy": "npm run frontend:build && npm run frontend:deploy"
     },
     "dependencies": {
         "@types/pem": "^1.14.4",

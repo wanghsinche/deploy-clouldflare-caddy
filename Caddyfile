@@ -99,7 +99,7 @@ chat.findata-be.uk {
 
     # Handle all other requests to serve your frontend application
     handle {
-        root * /root/finance-tools-master/dist
+        root * /var/lib/caddy/www/chat
         
         # This rewrite is the key for browser router support.
         # It tries the requested file first, and if not found, serves index.html.
@@ -117,6 +117,11 @@ jlc.findata-be.uk {
 easyeda-ai-bridge.findata-be.uk {
   tls /etc/caddy/certs/easyeda-ai-bridge.findata-be.uk.crt /etc/caddy/certs/easyeda-ai-bridge.findata-be.uk.key
   reverse_proxy localhost:49620
+}
+
+sub2api.findata-be.uk {
+  tls /etc/caddy/certs/sub2api.findata-be.uk.crt /etc/caddy/certs/sub2api.findata-be.uk.key
+  reverse_proxy localhost:8080
 }
 
 invest-dashboard.findata-be.uk {
